@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface TerminalTextProps {
   text: string;
@@ -20,6 +20,14 @@ export default function TerminalText({
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
 
+  // Keep a ref so the typing effect doesn't need onComplete as a dependency.
+  // Without this, every parent re-render creates a new onComplete reference,
+  // which restarts the animation on every phase change.
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  });
+
   useEffect(() => {
     setDisplayed("");
     setDone(false);
@@ -31,18 +39,20 @@ export default function TerminalText({
       } else {
         clearInterval(interval);
         setDone(true);
-        onComplete?.();
+        onCompleteRef.current?.();
       }
     }, speed);
     return () => clearInterval(interval);
-  }, [text, speed, onComplete]);
+  }, [text, speed]); // intentionally excludes onComplete — handled via ref above
 
   return (
     <span className={className}>
       {displayed}
       {showCursor && (
         <span
-          className={`inline-block w-[10px] h-[1.1em] bg-accent ml-0.5 align-middle${done ? " animate-blink" : ""}`}
+          className={`inline-block w-[10px] h-[1.1em] bg-accent ml-0.5 align-middle${
+            done ? " animate-blink" : ""
+          }`}
           aria-hidden="true"
         />
       )}
