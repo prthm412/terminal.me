@@ -20,6 +20,10 @@
 # production
 /build
 
+CLAUDE.md
+INSTRUCTIONS.md
+PHASES.md
+
 # misc
 .DS_Store
 *.pem
