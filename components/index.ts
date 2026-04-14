@@ -1,0 +1,10 @@
+export { default as SectionWrapper } from "./ui/SectionWrapper";
+export { default as TerminalText } from "./ui/TerminalText";
+export { default as Navbar } from "./ui/Navbar";
+export { default as Footer } from "./ui/Footer";
+export { default as Hero } from "./sections/Hero";
+export { default as About } from "./sections/About";
+export { default as Skills } from "./sections/Skills";
+export { default as Projects } from "./sections/Projects";
+export { default as Academics } from "./sections/Academics";
+export { default as Contact } from "./sections/Contact";
