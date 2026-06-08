@@ -11,8 +11,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 })
 
 export const metadata = {
-  title: 'YOUR_NAME — Portfolio',
-  description: 'Game & Systems Developer portfolio — C++, Vulkan, ML, and more.',
+  title: 'Prathmesh Mathur — Portfolio',
+  description: 'C++ & Systems Developer — Vulkan, ML, high-performance computing.',
 }
 
 export default function RootLayout({ children }) {

@@ -79,6 +79,8 @@ const App = () => {
     });
   }, []);
 
+  const clearSkills = useCallback(() => setSelectedSkills(new Set()), []);
+
   /* ── boot gate ── */
   if (!booted) return <BootSequence onDone={() => setBooted(true)} />;
 
@@ -99,7 +101,7 @@ const App = () => {
         <PixelDivider />
         <About />
         <PixelDivider />
-        <Skills selectedSkills={selectedSkills} onToggleSkill={toggleSkill} />
+        <Skills selectedSkills={selectedSkills} onToggleSkill={toggleSkill} onClearSkills={clearSkills} />
         <PixelDivider />
         <Projects selectedSkills={selectedSkills} />
         <PixelDivider />

@@ -8,6 +8,33 @@ const IconML    = () => <svg viewBox="0 0 16 16" width="14" height="14" fill="cu
 const IconData  = () => <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="1" y="8" width="2" height="6"/><rect x="4" y="5" width="2" height="9"/><rect x="7" y="7" width="2" height="7"/><rect x="10" y="2" width="2" height="12"/><rect x="13" y="4" width="2" height="10"/><rect x="0" y="14" width="16" height="1"/></svg>;
 const IconTools = () => <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="9" y="0" width="5" height="2"/><rect x="11" y="2" width="3" height="2"/><rect x="9" y="2" width="2" height="4"/><rect x="7" y="4" width="2" height="2"/><rect x="5" y="6" width="2" height="2"/><rect x="3" y="8" width="2" height="2"/><rect x="1" y="10" width="2" height="2"/><rect x="0" y="12" width="5" height="4"/></svg>;
 
+const GitHubIcon = () => (
+  <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor">
+    <rect x="4" y="0" width="2" height="2"/>
+    <rect x="10" y="0" width="2" height="2"/>
+    <rect x="2" y="2" width="12" height="2"/>
+    <rect x="0" y="4" width="16" height="2"/>
+    <rect x="0" y="6" width="4" height="2"/>
+    <rect x="6" y="6" width="4" height="2"/>
+    <rect x="12" y="6" width="4" height="2"/>
+    <rect x="0" y="8" width="16" height="2"/>
+    <rect x="2" y="10" width="12" height="2"/>
+    <rect x="2" y="12" width="2" height="2"/>
+    <rect x="6" y="12" width="4" height="2"/>
+    <rect x="12" y="12" width="2" height="2"/>
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor">
+    <rect x="2" y="2" width="2" height="2"/>
+    <rect x="2" y="6" width="2" height="6"/>
+    <rect x="6" y="6" width="6" height="2"/>
+    <rect x="6" y="8" width="2" height="4"/>
+    <rect x="10" y="8" width="2" height="4"/>
+  </svg>
+);
+
 const PixelPersonIcon = () => (
   <svg viewBox="0 0 10 12" width="9" height="11" fill="currentColor">
     <rect x="3" y="0" width="4" height="4"/>
@@ -196,8 +223,8 @@ export const Hero = () => {
             <span className="status-pulse"/>[ {status} ]
           </div>
           <div className="social-row">
-            <a href={contact.github}            className="social-link" target="_blank" rel="noreferrer">[ GH ]</a>
-            <a href={contact.linkedin}          className="social-link" target="_blank" rel="noreferrer">[ LI ]</a>
+            <a href={contact.github}            className="social-link" target="_blank" rel="noreferrer" title="GitHub"><GitHubIcon/></a>
+            <a href={contact.linkedin}          className="social-link" target="_blank" rel="noreferrer" title="LinkedIn"><LinkedInIcon/></a>
             <a href={`mailto:${contact.email}`} className="social-link">[ @ ]</a>
           </div>
         </div>
@@ -252,7 +279,7 @@ export const About = () => {
 };
 
 /* ── Skills ── */
-export const Skills = ({ selectedSkills, onToggleSkill }) => {
+export const Skills = ({ selectedSkills, onToggleSkill, onClearSkills }) => {
   const { skills } = PORTFOLIO_DATA;
   return (
     <section id="skills" data-screen-label="Skills">
@@ -281,6 +308,11 @@ export const Skills = ({ selectedSkills, onToggleSkill }) => {
             );
           })}
         </div>
+        {selectedSkills.size > 0 && (
+          <button className="clear-filter-btn" onClick={onClearSkills}>
+            [ CLEAR FILTER ]
+          </button>
+        )}
       </div>
     </section>
   );
@@ -345,18 +377,36 @@ export const Contact = () => {
   const { contact } = PORTFOLIO_DATA;
   const [copied, setCopied] = useState(false);
   const [sent, setSent]     = useState(false);
+  const [sendErr, setSendErr] = useState('');
   const [form, setForm]     = useState({ name:'', email:'', message:'' });
 
   const copyEmail = () => {
-    navigator.clipboard.writeText(contact.email).then(() => {
-      setCopied(true); setTimeout(() => setCopied(false), 2000);
-    });
+    navigator.clipboard.writeText(contact.email)
+      .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); })
+      .catch(() => { setCopied(false); });
   };
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) return;
-    setSent(true); setTimeout(() => setSent(false), 5000);
-    setForm({ name:'', email:'', message:'' });
+    setSendErr('');
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
+      });
+      if (response.ok) {
+        setSent(true);
+        setForm({ name:'', email:'', message:'' });
+        setTimeout(() => setSent(false), 5000);
+      } else {
+        setSendErr('TRANSMISSION FAILED — TRY AGAIN');
+        setTimeout(() => setSendErr(''), 4000);
+      }
+    } catch {
+      setSendErr('NO SIGNAL — CHECK CONNECTION');
+      setTimeout(() => setSendErr(''), 4000);
+    }
   };
 
   return (
@@ -392,7 +442,12 @@ export const Contact = () => {
                   <div className="form-success">I'll respond within 24 hrs.</div>
                 </div>
               )
-              : <button type="submit" className="send-btn">SEND SIGNAL</button>
+              : (
+                <div style={{display:'flex',flexDirection:'column',gap:'0.4rem',alignItems:'flex-start'}}>
+                  <button type="submit" className="send-btn">SEND SIGNAL</button>
+                  {sendErr && <div style={{fontSize:'9px',color:'var(--red)',letterSpacing:'0.1em'}}>{sendErr}</div>}
+                </div>
+              )
             }
           </form>
         </div>
@@ -425,7 +480,7 @@ export const Footer = () => {
         <span className="fstat-sep">|</span>
         VERTICES: {vertexCount}
         <span className="fstat-sep">|</span>
-        © YOUR_NAME
+        © {PORTFOLIO_DATA.name}
       </div>
     </footer>
   );

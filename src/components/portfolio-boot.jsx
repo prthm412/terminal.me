@@ -20,13 +20,16 @@ const BootSequence = ({ onDone }) => {
       catch { return {}; }
     })();
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (mq || saved.reduceMotion) { onDone(); return; }
+    if (mq || saved.reduceMotion || sessionStorage.getItem('booted')) { onDone(); return; }
 
     const timers = BOOT_LINES.map((ln, i) =>
       setTimeout(() => setVisible(v => [...v, i]), ln.delay)
     );
     const t1 = setTimeout(() => setExiting(true), DISMISS_AT);
-    const t2 = setTimeout(() => onDone(), DISMISS_AT + 480);
+    const t2 = setTimeout(() => {
+      sessionStorage.setItem('booted', '1');
+      onDone();
+    }, DISMISS_AT + 480);
     return () => { [...timers, t1, t2].forEach(clearTimeout); };
   }, []);
 

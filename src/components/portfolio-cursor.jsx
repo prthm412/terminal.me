@@ -48,6 +48,7 @@ const Cursor = ({ accent }) => {
   return (
     <div
       ref={elRef}
+      className="custom-cursor"
       style={{
         position: 'fixed', top: 0, left: 0, zIndex: 99999,
         width: 36, height: 36, pointerEvents: 'none',
