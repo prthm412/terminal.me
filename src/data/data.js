@@ -22,7 +22,7 @@ const PORTFOLIO_DATA = {
   skills: {
     BACKEND: {
       rune: "STR", label: "Backend & APIs",
-      items: ["C++", "Python", "FastAPI", "REST APIs", "WebSockets", "pybind11 (C++/Python interop)", "OOP design"]
+      items: ["Python 3", "FastAPI", "REST APIs", "WebSockets", "pybind11 (C++/Python interop)", "OOP design"]
     },
     DATA: {
       rune: "DEX", label: "Data & Caching",
@@ -48,16 +48,16 @@ const PORTFOLIO_DATA = {
       name: "MEDIQ",
       description: "Real-time multi-source scheduling and queue system. FastAPI backend with a custom C++ optimization engine (pybind11) in the request path. Redis pub/sub keeps every connected WebSocket client consistent under high write contention. Normalized PostgreSQL schema prevents double-booking at the data layer. Role-scoped JWT/OAuth2 with full audit logging.",
       tags: ["Python", "FastAPI", "PostgreSQL", "Redis", "WebSockets", "pybind11", "C++", "React", "TypeScript"],
-      github: "https://github.com/prthm412/medi-q",
+      github: "https://github.com/prthm412/mediq",
       visual: "mediq",
       badge: "FULL-STACK"
     },
     {
       id: "bugsage",
       name: "BUGSAGE",
-      description: "An entropy-based bug severity classifier built with scikit-learn, trained on features extracted from code-change history. SHAP and LIME are integrated directly into the pipeline so every prediction ships with an explanation, not a black-box score. Model iteration was validated by tracking F1, RMSE, and R2 to confirm entropy-based signals reliably predict severity across codebases.",
-      tags: ["Python", "PyTorch", "scikit-learn", "SHAP", "LIME", "feature engineering"],
-      github: "https://github.com/prthm412/bug-severity", visual: "diff", badge: "Research Paper"
+      description: "An entropy-based bug severity classifier built around whether developers can trust the output, not just whether the model scores well. Entropy-based features extracted from commit-level code change history feed an MLP, deployed via ONNX Runtime for sub-millisecond inference. SHAP and LIME are integrated so every prediction ships with an explanation, and iteration was validated with F1, RMSE, and R2 tracking.",
+      tags: ["Python 3", "PyTorch", "ONNX Runtime", "scikit-learn", "SHAP", "LIME", "feature engineering"],
+      github: "https://github.com/prthm412/bug-severity", visual: "diff", badge: "IC3 2026 - Paper Submitted"
     },
     {
       id: "acuity",
@@ -70,7 +70,7 @@ const PORTFOLIO_DATA = {
       id: "pathify",
       name: "PATHIFY",
       description: "An indoor navigation system that processes LiDAR point cloud scans to construct geometric corridor graphs. Computes optimal pedestrian paths through complex multi-floor building layouts.",
-      tags: ["Python", "Android Studio", "Kotlin", "XML", "NumPy", "Pandas", "JSON", "Git"],
+      tags: ["Python 3", "Android Studio", "Kotlin", "XML", "NumPy", "Pandas", "JSON", "Git"],
       github: "https://github.com/prthm412/pathify", visual: "pathfinding", badge: null
     }
   ],
