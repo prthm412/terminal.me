@@ -205,12 +205,10 @@ export const Hero = () => {
     <section id="hero" data-screen-label="Hero">
       <div className="hero-inner">
         <HudBox style={{ width: 172, height: 172, flexShrink: 0 }}>
-          <div className="avatar-box">
+          <div className="avatar-box has-photo">
             <AvatarPixelCorners/>
-            <div className="avatar-inner">
-              <div className="avatar-placeholder-icon">◈</div>
-              <span>AVATAR<br/>180 × 180</span>
-            </div>
+            <img src="/avatar.jpg" alt="Prathmesh Mathur"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}/>
           </div>
         </HudBox>
         <div>
@@ -242,12 +240,10 @@ export const About = () => {
         <div className="about-left">
           <div className="about-char-card">
             <HudBox>
-              <div className="avatar-box" style={{ width: 150, height: 150 }}>
+              <div className="avatar-box has-photo" style={{ width: 150, height: 150 }}>
                 <AvatarPixelCorners/>
-                <div className="avatar-inner">
-                  <div className="avatar-placeholder-icon">◈</div>
-                  <span style={{ fontSize: 9 }}>AVATAR<br/>180 × 180</span>
-                </div>
+                <img src="/avatar.jpg" alt="Prathmesh Mathur"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}/>
               </div>
             </HudBox>
             <div style={{ textAlign: 'center', marginTop: '0.75rem' }}>
