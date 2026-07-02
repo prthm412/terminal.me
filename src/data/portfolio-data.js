@@ -63,6 +63,15 @@ const PORTFOLIO_DATA = {
       description: "An MLP trained on commit-level code change features to predict bug severity before code review. Deployed as an ONNX Runtime inference service achieving sub-millisecond prediction latency.",
       tags: ["Python 3", "XAI", "PyTorch", "ONNX", "ONNX Runtime", "scikit-learn", "MLP design", "model training & deployment", "Pandas", "feature engineering"],
       github: "https://github.com/prthm412/bug-severity", visual: "diff", badge: "IC3 2026 — Paper Submitted"
+    },
+    {
+      id: "mediq",
+      name: "MEDIQ",
+      description: "Real-time multi-source scheduling and queue system. FastAPI + custom C++ optimization engine (pybind11) in the request path. Redis pub/sub keeps every connected WebSocket client consistent under high write contention. Role-scoped JWT/OAuth2 with full audit logging.",
+      tags: ["C++", "Python", "FastAPI", "PostgreSQL", "Redis", "WebSockets", "React", "TypeScript", "pybind11"],
+      github: "#",
+      visual: "mediq",
+      badge: "FULL-STACK"
     }
   ],
 

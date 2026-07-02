@@ -127,12 +127,152 @@ const BugSageVisual = () => (
   </div>
 );
 
+/* ── Mediq: real-time scheduler + pub/sub ── */
+const MediqVisual = () => {
+  const GRID = [
+    [1, 1, 0, 1, 0],
+    [0, 1, 1, 0, 1],
+    [1, 0, 2, 1, 0],
+  ];
+  const SLOTS = ['09:00','10:00','11:00','12:00','13:00'];
+  const DRS   = ['DR·A','DR·B','DR·C'];
+  const CW=38, CH=22, CG=3, GX=38, GY=44;
+  const HX=138, HY=205;
+  const CLIENTS = [[54,258],[138,270],[222,258]];
+  const mkPath = ([cx,cy]) => `M${HX},${HY} L${cx},${cy}`;
+
+  return (
+    <svg width="100%" height="100%" viewBox="0 0 276 340" fontFamily="IBM Plex Mono, monospace">
+      <defs>
+        <style>{`
+          .mq-book { animation: mqBook 1.5s ease-in-out infinite; }
+          @keyframes mqBook {
+            0%,100% { fill-opacity:.1; stroke-opacity:.4; }
+            50%      { fill-opacity:.6; stroke-opacity:1;  }
+          }
+          .mq-lbl  { animation: mqLbl  1.5s ease-in-out infinite; }
+          @keyframes mqLbl { 0%,100%{opacity:.35} 50%{opacity:1} }
+        `}</style>
+      </defs>
+
+      {/* ── Header bar ── */}
+      <rect x="0" y="0" width="276" height="26" fill="var(--accent)" fillOpacity=".07"/>
+      <line x1="0" y1="26" x2="276" y2="26" stroke="var(--accent)" strokeOpacity=".2" strokeWidth="1"/>
+      <text x="10" y="17" fill="var(--accent)" fontSize="8.5" letterSpacing=".14em">MEDIQ SCHEDULER</text>
+      <circle cx="245" cy="13" r="3" fill="var(--green)">
+        <animate attributeName="opacity" values="1;.2;1" dur="1.8s" repeatCount="indefinite"/>
+      </circle>
+      <text x="251" y="17" fill="var(--green)" fontSize="7.5" letterSpacing=".1em">LIVE</text>
+
+      {/* ── Time slot headers ── */}
+      {SLOTS.map((s,i) => (
+        <text key={s} x={GX+i*(CW+CG)+CW/2} y={GY-7}
+          textAnchor="middle" fill="var(--text-dim)" fontSize="7" letterSpacing=".04em">{s}</text>
+      ))}
+
+      {/* ── Schedule grid ── */}
+      {DRS.map((dr,r) => (
+        <g key={dr}>
+          <text x={GX-6} y={GY+r*(CH+CG)+CH/2+3}
+            textAnchor="end" fill="var(--text-dim)" fontSize="7.5" letterSpacing=".04em">{dr}</text>
+          {GRID[r].map((val,c) => {
+            const x=GX+c*(CW+CG), y=GY+r*(CH+CG);
+            const isNew=val===2, booked=val>=1;
+            return (
+              <g key={c}>
+                <rect x={x} y={y} width={CW} height={CH}
+                  fill="var(--accent)" fillOpacity={isNew?.1:booked?.18:0}
+                  stroke="var(--accent)" strokeOpacity={booked?.55:.18} strokeWidth="1"
+                  className={isNew?'mq-book':''}/>
+                {isNew && (
+                  <text x={x+CW/2} y={y+CH/2+3} textAnchor="middle"
+                    fill="var(--accent)" fontSize="6.5" letterSpacing=".1em"
+                    className="mq-lbl">● LIVE</text>
+                )}
+              </g>
+            );
+          })}
+        </g>
+      ))}
+
+      {/* ── Queue bar ── */}
+      {(()=>{
+        const qy=GY+3*(CH+CG)+6;
+        return (<g>
+          <line x1="0" y1={qy} x2="276" y2={qy} stroke="var(--border-bright)" strokeOpacity=".5"/>
+          <rect x="0" y={qy} width="276" height="22" fill="var(--accent)" fillOpacity=".03"/>
+          <text x="10" y={qy+14} fill="var(--text-dim)" fontSize="7.5" letterSpacing=".1em">QUEUE</text>
+          <rect x="52" y={qy+7} width="80" height="5" fill="var(--border)" opacity=".4"/>
+          <rect x="52" y={qy+7} width="56" height="5" fill="var(--accent)" opacity=".5"/>
+          <text x="138" y={qy+14} fill="var(--accent)" fontSize="7.5" letterSpacing=".08em">4 WAITING</text>
+          <text x="217" y={qy+14} fill="var(--green)" fontSize="7" letterSpacing=".05em">+1 LIVE</text>
+          <line x1="0" y1={qy+22} x2="276" y2={qy+22} stroke="var(--border-bright)" strokeOpacity=".5"/>
+        </g>);
+      })()}
+
+      {/* ── Pub/sub label ── */}
+      {(()=>{
+        const ty=GY+3*(CH+CG)+42;
+        return (
+          <text x="10" y={ty} fill="var(--text-dim)" fontSize="7.5" letterSpacing=".09em">
+            REDIS PUB/SUB — 3 CLIENTS CONNECTED
+          </text>
+        );
+      })()}
+
+      {/* ── Connection lines ── */}
+      {CLIENTS.map((c,i)=>(
+        <line key={i} x1={HX} y1={HY} x2={c[0]} y2={c[1]}
+          stroke="var(--accent)" strokeOpacity=".18" strokeWidth="1"/>
+      ))}
+
+      {/* ── Animated message dots (hub → clients) ── */}
+      {CLIENTS.map((c,i)=>(
+        <circle key={i} r="2.5" fill="var(--accent)">
+          <animateMotion path={mkPath(c)} dur="1.5s" begin={`${i*0.48}s`} repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;1;1;0" dur="1.5s" begin={`${i*0.48}s`} repeatCount="indefinite"/>
+        </circle>
+      ))}
+
+      {/* ── Hub ── */}
+      <rect x={HX-20} y={HY-11} width="40" height="22"
+        fill="var(--accent)" fillOpacity=".1" stroke="var(--accent)" strokeOpacity=".55" strokeWidth="1"/>
+      <text x={HX} y={HY+4} textAnchor="middle" fill="var(--accent)" fontSize="7.5" letterSpacing=".1em">REDIS</text>
+
+      {/* ── Client nodes ── */}
+      {CLIENTS.map(([cx,cy],i)=>(
+        <g key={i}>
+          <rect x={cx-16} y={cy-9} width="32" height="18"
+            fill="var(--surface2)" stroke="var(--accent)" strokeOpacity=".35" strokeWidth="1"/>
+          <text x={cx} y={cy+4} textAnchor="middle" fill="var(--text-dim)" fontSize="7" letterSpacing=".06em">
+            {['ADMIN','DOC','PAT'][i]}
+          </text>
+        </g>
+      ))}
+
+      {/* ── Event log ── */}
+      {(()=>{
+        const ey=293;
+        return (<g>
+          <line x1="0" y1={ey} x2="276" y2={ey} stroke="var(--border-bright)" strokeOpacity=".4"/>
+          <text x="10" y={ey+13} fill="var(--text-dim)" fontSize="6.5" letterSpacing=".06em">
+            BOOKED: DR·C / 11:00 · PUSHED 3 CLIENTS
+          </text>
+          <text x="10" y={ey+26} fill="var(--text-dim)" fontSize="6.5" letterSpacing=".06em" opacity=".5">
+            ROLE: ADMIN · JWT ✓ · AUDIT LOGGED
+          </text>
+        </g>);
+      })()}
+    </svg>
+  );
+};
+
 const ProjectCard = ({ project, selectedSkills }) => {
   const [hovered, setHovered] = useState(false);
   const isFiltered = selectedSkills.size > 0;
   const hasMatch   = isFiltered && project.tags.some(t => selectedSkills.has(t));
   const dimmed     = isFiltered && !hasMatch;
-  const Visual     = { lod: AcuityVisual, pathfinding: PathifyVisual, diff: BugSageVisual }[project.visual];
+  const Visual     = { lod: AcuityVisual, pathfinding: PathifyVisual, diff: BugSageVisual, mediq: MediqVisual }[project.visual];
 
   return (
     <HudBox>
