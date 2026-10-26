@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import PORTFOLIO_DATA from '../data/portfolio-data';
 import { HudBox, SectionHeader, SwordShieldIcon } from './portfolio-components';
+import TickForgeCard from './portfolio-tickforge';
 
 const QuestStamp = () => (
   <div className="quest-stamp">
@@ -317,7 +318,14 @@ const Projects = ({ selectedSkills }) => {
           )}
         </div>
         <div className="projects-stack">
-          {projects.map(p => (
+          {projects.map(p => p.visual === 'tickforge' ? (
+            <HudBox key={p.id}>
+              <div className={`project-card-h${selectedSkills.size > 0 && !p.tags.some(t => selectedSkills.has(t)) ? ' dimmed' : ''}`}
+                style={{ display: 'block' }}>
+                <TickForgeCard/>
+              </div>
+            </HudBox>
+          ) : (
             <ProjectCard key={p.id} project={p} selectedSkills={selectedSkills}/>
           ))}
         </div>

@@ -44,6 +44,25 @@ const PORTFOLIO_DATA = {
 
   projects: [
     {
+      id: "tickforge",
+      name: "TICKFORGE",
+      description: "Low-latency trading system simulator built from scratch in C++20. Replays market data over UDP, rebuilds an order book, runs a market-making strategy, and sends orders to a simulated exchange. Every step is timed in nanoseconds.",
+      tags: ["C++20", "CMake", "Linux", "UDP sockets", "lock-free atomics", "GoogleTest", "Google Benchmark", "ASan/UBSan/TSan", "Python", "SQLite", "DuckDB"],
+      github: "#",
+      visual: "tickforge",
+      badge: null,
+      metrics: [
+        { label: "PIPELINE", value: "3 threads" },
+        { label: "QUEUES",   value: "4 lock-free" },
+        { label: "TIMING",   value: "rdtsc / ns" }
+      ],
+      highlights: [
+        { pre: "Order book: ", bracket: "[measured]", post: " M msgs/s, p99 add ~[Y] ns" },
+        { pre: "Lock-free SPSC: ", bracket: "[N]", post: "x lower p99 vs mutex queue" },
+        { pre: "Tick-to-trade: p50/p99/p99.9 = ", bracket: "[A]/[B]/[C]", post: " ns" }
+      ]
+    },
+    {
       id: "mediq",
       name: "MEDIQ",
       description: "Real-time multi-source scheduling and queue system. FastAPI backend with a custom C++ optimization engine (pybind11) in the request path. Redis pub/sub keeps every connected WebSocket client consistent under high write contention. Normalized PostgreSQL schema prevents double-booking at the data layer. Role-scoped JWT/OAuth2 with full audit logging.",
